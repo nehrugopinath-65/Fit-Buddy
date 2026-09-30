@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}
+FitBuddy | Admin
+{% endblock %}
+
+
+{% block content %}
+
+<section class="admin-container">
+
+    <p class="badge">
+        ADMIN DASHBOARD
+    </p>
+
+    <h1>
+        All Users
+    </h1>
+
+    <p class="description">
+        View registered users and their
+        original and updated plans.
+    </p>
+
+
+    {% for user in users %}
+
+    <div class="user-card">
+
+        <div class="user-card-header">
+
+            <div>
+
+                <h2>
+                    {{ user.username }}
+                </h2>
+
+                <p>
+                    ID: {{ user.user_id }}
+                    |
+                    Age: {{ user.age }}
+                    |
+                    Weight: {{ user.weight }} kg
+                    |
+                    Goal: {{ user.goal }}
+                    |
+                    Intensity: {{ user.intensity }}
+                </p>
+
+            </div>
+
+
+            <form
+                action="/delete-user/{{ user.user_id }}"
+                method="post"
+                onsubmit="return confirm('Delete this user?')"
+            >
+
+                <button
+                    type="submit"
+                    class="delete-button"
+                >
+                    Delete
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div class="plans">
+
+            <div>
+
+                <h3>
+                    Original Plan
+                </h3>
+
+                <pre>
+{{ user.original_plan }}
+                </pre>
+
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Updated Plan
+                </h3>
+
+                <pre>
+{{ user.updated_plan or "No updated plan yet." }}
+                </pre>
+
+            </div>
+
+        </div>
+
+
+        {% if user.feedback %}
+
+        <div class="feedback">
+
+            <strong>
+                Latest Feedback:
+            </strong>
+
+            <p>
+                {{ user.feedback }}
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty">
+
+        <h2>
+            No users found
+        </h2>
+
+        <p>
+            Generate a fitness plan first.
+        </p>
+
+    </div>
+
+    {% endfor %}
+
+</section>
+
+{% endblock %}

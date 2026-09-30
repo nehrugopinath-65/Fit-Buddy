@@ -1,0 +1,818 @@
+{% extends "base.html" %}
+
+{% block title %}
+FitBuddy | Your Plan
+{% endblock %}
+
+
+{% block content %}
+
+<section class="result-container">
+
+
+    <!-- ============================= -->
+    <!-- HEADER -->
+    <!-- ============================= -->
+
+    <div class="result-header">
+
+        <div>
+
+            <p class="badge">
+                PERSONALIZED PLAN
+            </p>
+
+            <h1>
+                Hello <span id="username">there</span> 👋
+            </h1>
+
+            <p class="description">
+                Your AI-generated 7-day fitness plan
+            </p>
+
+        </div>
+
+
+        <a
+            href="/"
+            class="secondary-button"
+        >
+            ← Create New Plan
+        </a>
+
+    </div>
+
+
+
+    <!-- ============================= -->
+    <!-- USER INFORMATION -->
+    <!-- ============================= -->
+
+    <div class="user-info">
+
+        <div>
+
+            <small>
+                User ID
+            </small>
+
+            <strong id="userId">
+                -
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <small>
+                Age
+            </small>
+
+            <strong id="age">
+                -
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <small>
+                Weight
+            </small>
+
+            <strong id="weight">
+                -
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <small>
+                Goal
+            </small>
+
+            <strong id="goal">
+                -
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <small>
+                Intensity
+            </small>
+
+            <strong id="intensity">
+                -
+            </strong>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ============================= -->
+    <!-- SUCCESS MESSAGE -->
+    <!-- ============================= -->
+
+    <div
+        id="successMessage"
+        class="success"
+        style="display:none;"
+    >
+    </div>
+
+
+
+    <!-- ============================= -->
+    <!-- ERROR MESSAGE -->
+    <!-- ============================= -->
+
+    <div
+        id="errorMessage"
+        class="error"
+        style="display:none;"
+    >
+    </div>
+
+
+
+    <!-- ============================= -->
+    <!-- MAIN RESULT GRID -->
+    <!-- ============================= -->
+
+    <div class="result-grid">
+
+
+        <!-- ========================= -->
+        <!-- WORKOUT PLAN -->
+        <!-- ========================= -->
+
+        <section class="plan-card">
+
+            <div
+                class="section-title"
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    gap:15px;
+                "
+            >
+
+                <h2>
+                    🏋️ Your 7-Day Workout Plan
+                </h2>
+
+
+                <button
+                    type="button"
+                    id="copyBtn"
+                    style="width:auto;"
+                >
+                    Copy
+                </button>
+
+            </div>
+
+
+            <pre id="planText">
+Loading your personalized plan...
+            </pre>
+
+        </section>
+
+
+
+        <!-- ========================= -->
+        <!-- RIGHT SIDE -->
+        <!-- ========================= -->
+
+        <aside>
+
+
+            <!-- ===================== -->
+            <!-- NUTRITION TIP -->
+            <!-- ===================== -->
+
+            <section class="tip-card">
+
+                <h2>
+                    🥗 Nutrition / Recovery Tip
+                </h2>
+
+
+                <p id="nutritionTip">
+                    Loading nutrition tip...
+                </p>
+
+            </section>
+
+
+
+            <!-- ===================== -->
+            <!-- FEEDBACK -->
+            <!-- ===================== -->
+
+            <section class="feedback-card">
+
+                <h2>
+                    Update Your Plan
+                </h2>
+
+
+                <p>
+                    Tell FitBuddy what you want
+                    to change in your workout plan.
+                </p>
+
+
+                <form id="feedbackForm">
+
+                    <textarea
+                        id="feedback"
+                        name="feedback"
+                        rows="6"
+                        placeholder="Example: Add more cardio and one more rest day."
+                        required
+                    ></textarea>
+
+
+                    <button
+                        type="submit"
+                        id="updateBtn"
+                        class="primary-btn"
+                    >
+                        Update with AI →
+                    </button>
+
+                </form>
+
+            </section>
+
+
+        </aside>
+
+    </div>
+
+
+</section>
+
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        // =====================================
+        // GET SAVED RESULT
+        // =====================================
+
+        const savedResult =
+            localStorage.getItem(
+                "fitbuddy_result"
+            );
+
+
+        const savedUserId =
+            localStorage.getItem(
+                "fitbuddy_user_id"
+            );
+
+
+        const planText =
+            document.getElementById(
+                "planText"
+            );
+
+
+        const username =
+            document.getElementById(
+                "username"
+            );
+
+
+        const userId =
+            document.getElementById(
+                "userId"
+            );
+
+
+        const age =
+            document.getElementById(
+                "age"
+            );
+
+
+        const weight =
+            document.getElementById(
+                "weight"
+            );
+
+
+        const goal =
+            document.getElementById(
+                "goal"
+            );
+
+
+        const intensity =
+            document.getElementById(
+                "intensity"
+            );
+
+
+        const nutritionTip =
+            document.getElementById(
+                "nutritionTip"
+            );
+
+
+        const feedbackForm =
+            document.getElementById(
+                "feedbackForm"
+            );
+
+
+        const updateBtn =
+            document.getElementById(
+                "updateBtn"
+            );
+
+
+        const copyBtn =
+            document.getElementById(
+                "copyBtn"
+            );
+
+
+        const errorMessage =
+            document.getElementById(
+                "errorMessage"
+            );
+
+
+        const successMessage =
+            document.getElementById(
+                "successMessage"
+            );
+
+
+
+        // =====================================
+        // CHECK RESULT
+        // =====================================
+
+        if (!savedResult) {
+
+            planText.textContent =
+                "No fitness plan was found.";
+
+            return;
+
+        }
+
+
+
+        // =====================================
+        // CONVERT JSON
+        // =====================================
+
+        let result;
+
+        try {
+
+            result =
+                JSON.parse(savedResult);
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Invalid saved result:",
+                error
+            );
+
+            planText.textContent =
+                "Unable to load your fitness plan.";
+
+            return;
+
+        }
+
+
+
+        // =====================================
+        // DISPLAY USER INFORMATION
+        // =====================================
+
+        const user =
+            result.user || result;
+
+
+
+        username.textContent =
+            user.username ||
+            "there";
+
+
+        userId.textContent =
+            user.user_id ||
+            savedUserId ||
+            "-";
+
+
+        age.textContent =
+            user.age ||
+            "-";
+
+
+        weight.textContent =
+            user.weight
+                ? `${user.weight} kg`
+                : "-";
+
+
+        goal.textContent =
+            user.goal ||
+            "-";
+
+
+        intensity.textContent =
+            user.intensity ||
+            "-";
+
+
+
+        // =====================================
+        // DISPLAY WORKOUT PLAN
+        // =====================================
+
+        const plan =
+            result.plan ||
+            result.workout_plan ||
+            result.workout ||
+            result.message ||
+            "No workout plan was returned.";
+
+
+        planText.textContent =
+            plan;
+
+
+
+        // =====================================
+        // DISPLAY NUTRITION TIP
+        // =====================================
+
+        const tip =
+            result.nutrition_tip ||
+            user.nutrition_tip ||
+            result.nutrition ||
+            "Stay hydrated, eat balanced meals, and allow your body enough time to recover.";
+
+
+        nutritionTip.textContent =
+            tip;
+
+
+
+        // =====================================
+        // COPY PLAN
+        // =====================================
+
+        copyBtn.addEventListener(
+            "click",
+            async function () {
+
+                try {
+
+                    await navigator.clipboard.writeText(
+                        planText.textContent
+                    );
+
+
+                    copyBtn.textContent =
+                        "Copied!";
+
+
+                    setTimeout(
+                        function () {
+
+                            copyBtn.textContent =
+                                "Copy";
+
+                        },
+                        1500
+                    );
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "Copy failed:",
+                        error
+                    );
+
+                    alert(
+                        "Unable to copy the plan."
+                    );
+
+                }
+
+            }
+        );
+
+
+
+        // =====================================
+        // FEEDBACK SUBMIT
+        // =====================================
+
+        feedbackForm.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                const feedback =
+                    document
+                        .getElementById("feedback")
+                        .value
+                        .trim();
+
+
+                if (!feedback) {
+
+                    return;
+
+                }
+
+
+                // Hide old messages
+
+                errorMessage.style.display =
+                    "none";
+
+                successMessage.style.display =
+                    "none";
+
+
+                // Disable button
+
+                updateBtn.disabled =
+                    true;
+
+                updateBtn.textContent =
+                    "Updating your plan...";
+
+
+                try {
+
+                    // =================================
+                    // SEND FEEDBACK TO FASTAPI
+                    // =================================
+
+                    const response =
+                        await fetch(
+                            `${BACKEND_URL}/submit-feedback`,
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    user_id:
+                                        savedUserId ||
+                                        user.user_id,
+
+                                    feedback:
+                                        feedback
+
+                                })
+
+                            }
+                        );
+
+
+                    const updatedResult =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            updatedResult.detail ||
+                            "Unable to update your plan."
+                        );
+
+                    }
+
+
+
+                    // =================================
+                    // SAVE UPDATED PLAN
+                    // =================================
+
+                    localStorage.setItem(
+                        "fitbuddy_result",
+                        JSON.stringify(
+                            updatedResult
+                        )
+                    );
+
+
+
+                    // =================================
+                    // DISPLAY UPDATED PLAN
+                    // =================================
+
+                    const updatedPlan =
+                        updatedResult.plan ||
+                        updatedResult.workout_plan ||
+                        updatedResult.workout ||
+                        updatedResult.message;
+
+
+                    if (updatedPlan) {
+
+                        planText.textContent =
+                            updatedPlan;
+
+                    }
+
+
+
+                    // =================================
+                    // UPDATE NUTRITION TIP
+                    // =================================
+
+                    const updatedTip =
+                        updatedResult.nutrition_tip ||
+                        updatedResult.nutrition;
+
+
+                    if (updatedTip) {
+
+                        nutritionTip.textContent =
+                            updatedTip;
+
+                    }
+
+
+
+                    // =================================
+                    // SUCCESS MESSAGE
+                    // =================================
+
+                    successMessage.textContent =
+                        "Your plan has been updated successfully!";
+
+
+                    successMessage.style.display =
+                        "block";
+
+
+                    // Clear textarea
+
+                    document
+                        .getElementById("feedback")
+                        .value = "";
+
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "Feedback Error:",
+                        error
+                    );
+
+
+                    errorMessage.textContent =
+                        error.message ||
+                        "Unable to update your plan.";
+
+
+                    errorMessage.style.display =
+                        "block";
+
+                }
+
+
+                finally {
+
+                    updateBtn.disabled =
+                        false;
+
+                    updateBtn.textContent =
+                        "Update with AI →";
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}
+Important: your FastAPI route must match
+
+The feedback.html above sends:
+
+POST /submit-feedback
+
+with JSON:
+
+{
+    "user_id": "FB001",
+    "feedback": "Add more cardio and one more rest day."
+}
+
+So your FastAPI backend needs an endpoint matching that.
+
+Also, your /generate-workout endpoint needs to return something roughly like:
+
+{
+    "user": {
+        "username": "John",
+        "user_id": "FB001",
+        "age": 25,
+        "weight": 70,
+        "goal": "muscle gain",
+        "intensity": "medium"
+    },
+    "plan": "Day 1: ...\nDay 2: ...",
+    "nutrition_tip": "Eat enough protein and stay hydrated."
+}
+
+The template is intentionally flexible about the response keys, so it also accepts workout_plan, workout, and similar names.
+
+One thing to change in your app.js
+
+Because feedback.html is being served by FastAPI, do not use:
+
+window.location.href = "feedback.html";
+
+Use:
+
+window.location.href =
+    `/feedback?user_id=${encodeURIComponent(user_id)}`;
+
+And in main.py/routes.py:
+
+@app.get("/feedback")
+async def feedback(request: Request, user_id: str = ""):
+
+    return templates.TemplateResponse(
+        "feedback.html",
+        {
+            "request": request,
+            "user_id": user_id
+        }
+    )
+
+That gives you:
+
+index.html
+    ↓
+app.js
+    ↓
+POST /generate-workout
+    ↓
+FastAPI + AI
+    ↓
+localStorage
+    ↓
+GET /feedback
+    ↓
+feedback.html
+    ↓
+POST /submit-feedback
+    ↓
+FastAPI + AI
+    ↓
+updated workout plan
+
+If you send me your current main.py / routes.py, I can give you the matching complete backend code for /generate-workout and /submit-feedback so these frontend files work together end-to-end.

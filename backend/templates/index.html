@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}
+FitBuddy | AI Fitness Planner
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="hero-text">
+
+        <p class="badge">
+            AI FITNESS PLANNER
+        </p>
+
+        <h1>
+            Build a workout plan
+            <span>made for you.</span>
+        </h1>
+
+        <p class="description">
+            Enter your fitness details and FitBuddy
+            will create a personalized 7-day workout
+            plan and nutrition tip.
+        </p>
+
+    </div>
+
+
+    <div class="form-card">
+
+        <h2>
+            Create Your Plan
+        </h2>
+
+
+        <!-- Error message -->
+
+        <div
+            id="errorMessage"
+            class="error"
+            style="display:none;"
+        ></div>
+
+
+        <!-- Success message -->
+
+        <div
+            id="successMessage"
+            class="success"
+            style="display:none;"
+        ></div>
+
+
+        <form
+            id="planForm"
+        >
+
+            <label>
+                Name
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter your name"
+                    required
+                >
+
+            </label>
+
+
+            <label>
+                User ID
+
+                <input
+                    type="text"
+                    id="user_id"
+                    name="user_id"
+                    placeholder="Example: FB001"
+                    required
+                >
+
+            </label>
+
+
+            <div class="row">
+
+                <label>
+                    Age
+
+                    <input
+                        type="number"
+                        id="age"
+                        name="age"
+                        min="13"
+                        max="100"
+                        required
+                    >
+
+                </label>
+
+
+                <label>
+                    Weight (kg)
+
+                    <input
+                        type="number"
+                        id="weight"
+                        name="weight"
+                        step="0.1"
+                        required
+                    >
+
+                </label>
+
+            </div>
+
+
+            <label>
+                Fitness Goal
+
+                <select
+                    id="goal"
+                    name="goal"
+                    required
+                >
+
+                    <option value="">
+                        Select goal
+                    </option>
+
+                    <option value="weight loss">
+                        Weight Loss
+                    </option>
+
+                    <option value="muscle gain">
+                        Muscle Gain
+                    </option>
+
+                    <option value="general wellness">
+                        General Wellness
+                    </option>
+
+                    <option value="flexibility">
+                        Flexibility
+                    </option>
+
+                </select>
+
+            </label>
+         <form id="planForm">
+
+    <input
+        type="text"
+        id="username"
+        name="username"
+        required
+    >
+
+    <input
+        type="text"
+        id="user_id"
+        name="user_id"
+        required
+    >
+
+    <input
+        type="number"
+        id="age"
+        name="age"
+        required
+    >
+
+    <input
+        type="number"
+        id="weight"
+        name="weight"
+        required
+    >
+
+    <select id="goal" name="goal" required>
+        <option value="weight loss">Weight Loss</option>
+        <option value="muscle gain">Muscle Gain</option>
+        <option value="general wellness">General Wellness</option>
+        <option value="flexibility">Flexibility</option>
+    </select>
+
+    <select id="intensity" name="intensity" required>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+    </select>
+
+    <button type="submit" id="generateBtn">
+        Generate 7-Day Plan
+    </button>
+
+</form>
+    </div>
+
+</section>
+
+{% endblock %}
